@@ -10,8 +10,8 @@ class FFIndRtnProvider:
     reb: 1 (Monthly) or 12 (Annual)
     weight: "value" or "equal"
     """
-    def __init__(self, reb: int, weight: str):
-        self.reb = int(reb)
+    def __init__(self, reb_month: int, weight: str, ):
+        self.reb_month = int(reb_month)
         self.weight = weight.lower().strip()
 
     def _section_title(self) -> str:
@@ -22,14 +22,15 @@ class FFIndRtnProvider:
             (12, "value"): "Average Value Weighted Returns -- Annual",
             (12, "equal"): "Average Equal Weighted Returns -- Annual",
         }
-        title = mapping.get((self.reb, self.weight))
+        title = mapping.get((self.reb_month, self.weight))
         if title is None:
-            raise ValueError("reb は 1 か 12, weight は 'value' か 'equal' を指定してください。")
+            raise ValueError("reb_month は 1 か 12, weight は 'value' か 'equal' を指定してください。")
         return title
 
     def download(self, save_path: str):
         """
         Ken French サイトからデータを取得して該当セクションを CSV 保存
+        save_path: 保存先のファイルパス
         """
         url = "https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/ftp/12_Industry_Portfolios_CSV.zip"
         print("Downloading Fama-French 12 ind rtns ...")
@@ -74,21 +75,24 @@ class FFIndRtnProvider:
         df = df.with_columns([(pl.col(c).cast(pl.Float64) / 100.0) for c in num_cols])
 
         # 保存
-        save_path_obj = Path(save_path)
-        save_path_obj.parent.mkdir(parents=True, exist_ok=True)
-        df.write_csv(str(save_path_obj))
-        print(f"Saved to {save_path_obj.resolve()}")
+        save_path_results = Path(save_path)
+        save_path_dir = save_path_results / "FF_Ind_Rtn"
+        save_path = save_path_dir / f"FF_Ind_Rtn_{self.reb_month}_{self.weight}.csv"
+        
+        save_path_dir.mkdir(parents=True, exist_ok=True)
+        df.write_csv(str(save_path))
+        print(f"Saved to {save_path.resolve()}")
 
         return df
 
 """
 class FFFactorRtnProvider():
     \"\"\"Fama-French 3 Factor リターンを取得するクラス
-    reb: 1 (Monthly) or 12 (Annual)
+    reb_month: 1 (Monthly) or 12 (Annual)
     weight: "value" or "equal"
     \"\"\"
-    def __init__(self, reb: int, weight: str):
-        self.reb = int(reb)
+    def __init__(self, reb_month: int, weight: str):
+        self.reb_month = int(reb_month)
         self.weight = weight.lower().strip()
 
 """
