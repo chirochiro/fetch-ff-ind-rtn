@@ -1,0 +1,15 @@
+[project]
+name = "fetch-ff-ind-rtn"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "ipython == 9.4.0",
+    "matplotlib == 3.10.3",
+    "numpy == 2.3.1",
+    "pandas == 2.3.1",
+    "polars == 1.31.0",
+    "requests == 2.32.4",
+    "click == 8.3.0"
+]
