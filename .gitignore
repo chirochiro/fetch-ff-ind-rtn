@@ -10,3 +10,5 @@ wheels/
 .venv
 
 results/*.csv
+results/FF_Ind_Rtn_*.csv
+
